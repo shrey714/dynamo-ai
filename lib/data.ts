@@ -52,6 +52,11 @@ export const pages = [
         url: "/train",
         icon: Settings2,
     },
+    {
+        title: "Report",
+        url: "/report",
+        icon: Newspaper,
+    },
 ];
 
 

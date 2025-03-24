@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 
 import type { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Train Model",
-  description: "Train Model",
+  title: "Reports",
+  description: "Reports",
 };
 
 export default async function RootLayout({

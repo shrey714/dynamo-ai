@@ -1,5 +1,5 @@
 import { create } from "zustand";
-// import { FRY14MData } from "../data";
+import { FRY14MData } from "../data";
 
 interface FRYDataState {
     FRYdata: unknown | null;
@@ -7,6 +7,6 @@ interface FRYDataState {
 }
 
 export const useFRYDataStore = create<FRYDataState>((set) => ({
-    FRYdata: null, // Default value
+    FRYdata: FRY14MData, // Default value
     setFRYData: (data) => set({ FRYdata: data }),
 }));
