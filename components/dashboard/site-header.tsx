@@ -18,7 +18,7 @@ export function SiteHeader() {
           width={200}
           height={100}
           priority
-          className="w-32 sm:w-52"
+          className="w-32 sm:w-52 h-3.5 sm:h-[21.73px]"
         />
 
         <Separator
@@ -26,7 +26,9 @@ export function SiteHeader() {
           className="sm:!mx-1 rounded-full !h-[40%] sm:!h-[55%] !w-[2px] sm:!w-[3px] bg-white"
         />
 
-        <p className="font-semibold text-base sm:text-xl flex flex-1 text-white">AI_Dynamos</p>
+        <p className="font-semibold text-base sm:text-xl flex flex-1 text-white">
+          AI_Dynamos
+        </p>
         <Button
           className="h-8 w-8 text-white"
           variant="ghost"
