@@ -50,11 +50,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <SidebarMenuButton
                     tooltip={item.title}
                     isActive={isSubPath(pathname, item.url)}
-                    className="pl-3 overflow-hidden h-auto text-lg font-medium"
+                    className="pl-3 overflow-hidden h-auto text-lg font-medium py-0"
                   >
                     <Link
                       href={item.url}
-                      className="flex flex-1 flex-row items-center gap-3"
+                      className="flex flex-1 flex-row items-center gap-3 py-2"
                     >
                       <span
                         className={`w-1 absolute -left-0.5 bg-red-500 rounded-full transition-all duration-300 ease-in-out ${

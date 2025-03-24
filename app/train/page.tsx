@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import {
   FileUploader,
@@ -19,9 +18,17 @@ import {
 import { Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useFRYTypeStore } from "@/lib/store/useFRYTypeStore";
-import { useFRYDataStore } from "@/lib/store/useFRYData";
-import { FRY14MData } from "@/lib/data";
+import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const dropZoneConfig = {
   maxFiles: 1,
@@ -38,49 +45,74 @@ const dropZoneConfig = {
 
 export default function Page() {
   const [files, setFiles] = useState<File[] | null>(null);
-  const { FRYType, setFRYType } = useFRYTypeStore();
-  const { setFRYData } = useFRYDataStore();
+  const [FRYType, setFRYType] = useState("FRY14M");
   const [loading, setloading] = useState(false);
 
   return (
-    <div className="flex flex-col gap-8 items-center justify-start px-4 py-[5svh]">
-      <Tabs
-        value={FRYType}
-        className="flex flex-col items-center justify-start w-full"
-      >
-        <TabsList className="p-1.5 h-auto max-w-xl grid w-full gap-2 grid-cols-2 bg-border">
-          <TabsTrigger
-            className="cursor-pointer data-[state=inactive]:hover:bg-secondary data-[state=active]:!bg-red-500 data-[state=active]:!text-white py-2.5 text-base"
-            value="FRY14M"
-            onClick={() => {
-              if (FRYType !== "FRY14M") setFiles(null);
-              setFRYType("FRY14M");
-            }}
-          >
-            FRY14M
-          </TabsTrigger>
-          <TabsTrigger
-            className="cursor-pointer data-[state=inactive]:hover:bg-secondary data-[state=active]:!bg-red-500 data-[state=active]:!text-white py-2.5 text-base"
-            value="FRY14Q"
-            onClick={() => {
-              if (FRYType !== "FRY14Q") setFiles(null);
-              setFRYType("FRY14Q");
-            }}
-          >
-            FRY14Q
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-
-      <Card className="w-full max-w-4xl pt-0 rounded-xl bg-muted/50 overflow-hidden">
-        <CardHeader className="py-4 bg-border">
-          <CardTitle>{FRYType}</CardTitle>
+    <div className="flex flex-1 flex-col items-center justify-start md:justify-start px-4 py-4 sm:py-20 overflow-y-auto">
+      <Card className="w-full max-w-4xl pt-0 overflow-hidden rounded-xl bg-muted/50">
+        <CardHeader className="bg-border py-4">
+          <CardTitle>Train model</CardTitle>
           <CardDescription>
-            Upload your {FRYType} document and click on Get Reports.
+            Upload your Frs documents + Data sets and click on Train Button.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="space-y-1">
+        <CardContent>
+          <Select
+            required
+            onValueChange={(value) => {
+              setFRYType(value);
+            }}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select FRY Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>FRY Type</SelectLabel>
+                <SelectItem value="FRY14M">FRY14M</SelectItem>
+                <SelectItem value="FRY14Q">FRY14Q</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <Separator className="mt-4 mb-2" />
+
+          <div className="w-full flex flex-1 flex-col gap-2 md:gap-3 md:flex-row">
+            <FileUploader
+              id="FileUpload"
+              value={files}
+              reSelect={true}
+              onValueChange={setFiles}
+              dropzoneOptions={dropZoneConfig}
+              className="relative rounded-lg p-2"
+            >
+              <Label
+                htmlFor="FileUpload"
+                className="text-muted-foreground pb-3"
+              >
+                Frs Documents
+              </Label>
+              <FileInput
+                id="FileUpload"
+                className="outline-dashed outline-2 outline-border"
+              >
+                <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full ">
+                  <FileSvgDraw />
+                </div>
+              </FileInput>
+              <FileUploaderContent className="bg-accent rounded-sm">
+                {files &&
+                  files.length > 0 &&
+                  files.map((file, i) => (
+                    <FileUploaderItem key={i} index={i} className="py-2 h-auto">
+                      <Paperclip className="h-4 w-4 stroke-current" />
+                      <span>{file.name}</span>
+                    </FileUploaderItem>
+                  ))}
+              </FileUploaderContent>
+            </FileUploader>
+
             <FileUploader
               value={files}
               reSelect={true}
@@ -88,6 +120,12 @@ export default function Page() {
               dropzoneOptions={dropZoneConfig}
               className="relative rounded-lg p-2"
             >
+              <Label
+                htmlFor="FileUpload"
+                className="text-muted-foreground pb-3"
+              >
+                Data Sets
+              </Label>
               <FileInput className="outline-dashed outline-2 outline-border">
                 <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full ">
                   <FileSvgDraw />
@@ -113,16 +151,16 @@ export default function Page() {
               setloading(true);
               setTimeout(() => {
                 if (FRYType === "FRY14M") {
-                  setFRYData(FRY14MData);
+                  // setFRYData(FRY14MData);
                 } else if (FRYType === "FRY14Q") {
-                  setFRYData({});
+                  // setFRYData({});
                 }
                 setloading(false);
               }, 3000);
             }}
             className="transition-all duration-300 hover:ring-1 hover:ring-primary/90 hover:ring-offset-1 bg-red-500 hover:bg-red-800 cursor-pointer text-lg  h-auto text-white"
           >
-            {loading ? "Loading..." : `Get ${FRYType} Reports`}
+            {loading ? "Loading..." : "Train"}
           </Button>
         </CardFooter>
       </Card>

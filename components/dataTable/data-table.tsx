@@ -52,7 +52,7 @@ export function DataTable({ reportType }: dataTable) {
   });
 
   return (
-    <div className="flex flex-col pt-2 gap-2 px-2 overflow-y-hidden h-[calc(100svh-110px)]">
+    <div className="flex flex-col pt-2 gap-2 px-2 overflow-y-hidden h-auto sm:h-[calc(100svh-110px)]">
       <div className="flex items-center justify-end">
         <Button
           variant="outline"
@@ -101,6 +101,7 @@ export function DataTable({ reportType }: dataTable) {
                 >
                   {row.getVisibleCells().map((cell) => {
                     const isMetric = cell.column.id == "metric";
+                    // const isRemediation = cell.column.id == "remediation";
                     return (
                       <TableCell
                         className={` ${

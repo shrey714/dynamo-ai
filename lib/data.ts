@@ -325,7 +325,7 @@ export const FRY14MData = {
                 Purchase: 1213,
             }),
             anomaly: "Normal",
-            remediation: "Ensure diversification of loan purposes to mitigate risk.",
+            remediation: "",
         },
         {
             metric: "Origination Channel Breakdown",
