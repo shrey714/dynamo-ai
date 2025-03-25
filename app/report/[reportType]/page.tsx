@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/dataTable/data-table";
+import { generateColumns } from "@/lib/utils";
 
 export default async function Page({
   params,
@@ -6,5 +7,6 @@ export default async function Page({
   params: Promise<{ reportType: string }>;
 }) {
   const { reportType } = await params;
-  return <DataTable reportType={decodeURIComponent(reportType)} />;
+  console.log(reportType);
+  return <DataTable columns={generateColumns([])} data={Object.values([])} />;
 }

@@ -41,7 +41,6 @@ export default function Page() {
   const { FRYType, setFRYType } = useFRYTypeStore();
   const { setFRYData } = useFRYDataStore();
   const [loading, setloading] = useState(false);
-
   return (
     <div className="flex flex-col gap-8 items-center justify-start px-4 py-[5svh]">
       <Tabs

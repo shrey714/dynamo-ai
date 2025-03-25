@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
@@ -20,24 +21,17 @@ import { DataTablePagination } from "./data-table-pagination";
 import { DataTableViewOptions } from "./data-table-view-options";
 import { Button } from "../ui/button";
 import { Download } from "lucide-react";
-import { exportTableToCSV, generateColumns } from "@/lib/utils";
-// import { FRY14MData } from "@/lib/data";
-import { useFRYDataStore } from "@/lib/store/useFRYData";
+import { exportTableToCSV } from "@/lib/utils";
 
-interface dataTable {
-  reportType: string;
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
-export function DataTable({ reportType }: dataTable) {
-  const { FRYdata } = useFRYDataStore();
-
-  const data =
-    FRYdata && typeof FRYdata === "object" && reportType in FRYdata
-      ? (FRYdata as Record<string, never>)[reportType]
-      : [];
-
-  const columns = generateColumns(data);
-
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
