@@ -80,7 +80,7 @@ const generateColumns = (data: RowData[]): ColumnDef<unknown>[] => {
       const maxLength = 50;
 
       return (
-        <Tooltip>
+        <Tooltip delayDuration={200}>
           <TooltipTrigger asChild>
             <div className={`max-w-[300px] truncate cursor-pointer`}>
               {value.length > maxLength

@@ -4,7 +4,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   Row,
   useReactTable,
@@ -18,7 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination } from "@/components/dataTable/data-table-pagination";
 import { DataTableViewOptions } from "@/components/dataTable/data-table-view-options";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -40,7 +38,6 @@ export function DataTable<TData>({
     columns,
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
         pageSize: 20,
@@ -121,7 +118,6 @@ export function DataTable<TData>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
     </div>
   );
 }
