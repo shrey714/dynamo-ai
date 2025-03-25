@@ -1,7 +1,6 @@
 "use client";
 
-import rules from "@/public/Rules.json";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "../_components/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/dataTable/data-table-column-header";
@@ -16,42 +15,69 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import axios from "axios";
+import Spinner from "@/components/spinner";
 
 type RowData = Record<string, unknown>;
 
 export default function Page() {
   const [selectedRow, setSelectedRow] = useState<RowData | null>(null);
+  const [loading, setloading] = useState(true);
+  const [ruleData, setRuleData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("https://074b-34-126-158-37.ngrok-free.app/get_current_rules")
+      .then((response) => {
+        setRuleData(JSON.parse(response.data));
+        setloading(false);
+      })
+      .catch((err) => {
+        console.log("Failed to fetch data", err);
+        setloading(false);
+      });
+  }, []);
 
   return (
     <>
-      {selectedRow && (
-        <Dialog open={!!selectedRow} onOpenChange={() => setSelectedRow(null)}>
-          <DialogContent className="sm:max-w-4xl p-6 max-h-[90svh] overflow-y-auto">
-            <DialogTitle>Rule Data</DialogTitle>
-            <DialogDescription hidden />
-            <table className="w-full overflow-hidden border bg-muted rounded-lg">
-              <tbody className="w-full border-border border rounded-lg border-collapse overflow-hidden">
-                {Object.entries(selectedRow).map(([key, value], index) => (
-                  <tr key={index}>
-                    <th className="bg-border border-border border border-collapse p-2">
-                      {key}
-                    </th>
-                    <td className="border-border border border-collapse p-2">
-                      {String(value)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </DialogContent>
-        </Dialog>
+      {loading ? (
+        <div className="w-full h-full flex flex-1 items-center justify-center">
+          <Spinner />
+        </div>
+      ) : (
+        <>
+          {selectedRow && (
+            <Dialog
+              open={!!selectedRow}
+              onOpenChange={() => setSelectedRow(null)}
+            >
+              <DialogContent className="sm:max-w-4xl p-6 max-h-[90svh] overflow-y-auto">
+                <DialogTitle>Rule Data</DialogTitle>
+                <DialogDescription hidden />
+                <table className="w-full overflow-hidden border bg-muted rounded-lg">
+                  <tbody className="w-full border-border border rounded-lg border-collapse overflow-hidden">
+                    {Object.entries(selectedRow).map(([key, value], index) => (
+                      <tr key={index}>
+                        <th className="bg-border border-border border border-collapse p-2">
+                          {key}
+                        </th>
+                        <td className="border-border border border-collapse p-2">
+                          {String(value)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </DialogContent>
+            </Dialog>
+          )}
+          <DataTable
+            columns={generateColumns(Object.values(ruleData))}
+            data={Object.values(ruleData).slice(1)}
+            onRowClick={(row) => setSelectedRow(row.original as RowData)}
+          />
+        </>
       )}
-
-      <DataTable
-        columns={generateColumns(Object.values(JSON.parse(rules)))}
-        data={Object.values(JSON.parse(rules)).slice(1)}
-        onRowClick={(row) => setSelectedRow(row.original as RowData)}
-      />
     </>
   );
 }
