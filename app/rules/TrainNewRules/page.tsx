@@ -21,6 +21,8 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useApiStore } from "@/lib/store/useApiStore";
 
 const dropZoneConfig = {
   maxFiles: 1,
@@ -37,35 +39,52 @@ const dropZoneConfig = {
 
 export default function Page() {
   const [files, setFiles] = useState<File[] | null>(null);
-  // const [setFRYType] = useState("FRY14M");
   const [loading, setloading] = useState(false);
   const [responseStaus, setStaus] = useState<null | string>(null);
+  const { apiEndpoint } = useApiStore.getState();
 
   const submitFile = async () => {
-    setloading(true);
-    if (files && files[0]) {
-      const formData = new FormData();
-      formData.append("file", files[0]);
-
-      try {
-        const response = await axios.post(
-          "https://7cc2-34-126-158-37.ngrok-free.app/generate_new_rules",
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-        if (response.data.status === "success") {
-          setStaus("success");
-        } else {
-          setStaus("failed");
-        }
-      } catch (err) {
-        console.log("Failed to generate new rules. Please try again.", err);
-        setStaus("failed");
-      }
+    if (!files || !files[0]) {
+      toast.error("Please select a file first.");
+      return;
     }
-    setloading(false);
+    if (!apiEndpoint) {
+      toast.error("API Endpoint is not available");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", files[0]);
+    setloading(true);
+    toast.promise(
+      axios.post(
+        "https://7cc2-34-126-158-37.ngrok-free.app/generate_new_rules",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      ),
+      {
+        loading: "Generating new rules...",
+        success: (response) => {
+          if (response.data.status === "success") {
+            setloading(false);
+            setStaus("success");
+            return "Rules generated successfully!";
+          } else {
+            setloading(false);
+            setStaus("failed");
+            throw new Error("Failed to generate new rules.");
+          }
+        },
+        error: (error) => {
+          setloading(false);
+          console.error("Failed to generate new rules:", error);
+          setStaus("failed");
+          return "Failed to generate new rules. Please try again.";
+        },
+      }
+    );
   };
 
   return (
@@ -167,9 +186,7 @@ const FileSvgDraw = () => {
         <span className="font-semibold">Click to upload</span>
         &nbsp; or drag and drop
       </p>
-      <p className="text-xs text-gray-500 dark:text-gray-400">
-        .pdf
-      </p>
+      <p className="text-xs text-gray-500 dark:text-gray-400">.pdf</p>
     </>
   );
 };

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
+import { LinkHandeler } from "./link-handeler";
 
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar();
@@ -29,6 +30,7 @@ export function SiteHeader() {
         <p className="font-semibold text-base sm:text-xl flex flex-1 text-white">
           AI_Dynamos
         </p>
+        <LinkHandeler />
         <Button
           className="h-8 w-8 text-white"
           variant="ghost"

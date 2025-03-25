@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dialog";
 import axios from "axios";
 import Spinner from "@/components/spinner";
+import { useApiStore } from "@/lib/store/useApiStore";
+import { toast } from "sonner";
 
 type RowData = Record<string, unknown>;
 
@@ -24,19 +26,30 @@ export default function Page() {
   const [selectedRow, setSelectedRow] = useState<RowData | null>(null);
   const [loading, setloading] = useState(true);
   const [ruleData, setRuleData] = useState([]);
+  const { apiEndpoint } = useApiStore.getState();
 
   useEffect(() => {
-    axios
-      .get("https://7cc2-34-126-158-37.ngrok-free.app/get_current_rules")
-      .then((response) => {
-        setRuleData(JSON.parse(response.data));
+    if (apiEndpoint) {
+      try {
+        axios
+          .get(`${apiEndpoint}/get_current_rules`)
+          .then((response) => {
+            setRuleData(JSON.parse(response.data));
+            setloading(false);
+          })
+          .catch((err) => {
+            console.log("Failed to fetch data", err);
+            setloading(false);
+          });
+      } catch (error) {
+        console.log("error : ", error);
         setloading(false);
-      })
-      .catch((err) => {
-        console.log("Failed to fetch data", err);
-        setloading(false);
-      });
-  }, []);
+      }
+    } else {
+      toast.error("API Endpoint is not available");
+      setloading(false);
+    }
+  }, [apiEndpoint]);
 
   return (
     <>
