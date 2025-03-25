@@ -72,7 +72,7 @@ export function exportTableToCSV<TData>(
   document.body.removeChild(link);
 }
 
-export const generateColumns = (
+export const commonGenerateColumns = (
   data: Record<string, unknown>[]
 ): ColumnDef<unknown>[] => {
   if (data.length === 0) return [];
