@@ -27,7 +27,7 @@ export default function Page() {
 
   useEffect(() => {
     axios
-      .get("https://074b-34-126-158-37.ngrok-free.app/get_current_rules")
+      .get("https://7cc2-34-126-158-37.ngrok-free.app/get_current_rules")
       .then((response) => {
         setRuleData(JSON.parse(response.data));
         setloading(false);
