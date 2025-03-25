@@ -56,7 +56,7 @@ export default function Page() {
   );
 }
 
-export const generateColumns = (data: RowData[]): ColumnDef<unknown>[] => {
+const generateColumns = (data: RowData[]): ColumnDef<unknown>[] => {
   if (data.length === 0) return [];
 
   return Object.keys(
