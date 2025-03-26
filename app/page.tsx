@@ -140,7 +140,7 @@ export default function Page() {
               value="FRY14Q"
               onClick={() => {}}
             >
-              FRY14Q
+              FRY14Q H1 Schedule Data validation
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -191,7 +191,7 @@ export default function Page() {
               }}
               className="transition-all duration-300 hover:ring-1 hover:ring-primary/90 hover:ring-offset-1 bg-red-500 hover:bg-red-800 cursor-pointer text-lg  h-auto text-white"
             >
-              {loading ? "Loading..." : `Get FRY14Q Reports`}
+              {loading ? "Loading..." : `Upload datasets`}
             </Button>
           </CardFooter>
         </Card>
