@@ -89,9 +89,10 @@ export default function Page() {
     <div className="flex flex-1 flex-col items-center justify-start md:justify-start px-4 py-4 sm:py-20 overflow-y-auto">
       <Card className="w-full max-w-4xl pt-0 overflow-hidden rounded-xl bg-muted/50">
         <CardHeader className="bg-border py-4">
-          <CardTitle>Train model</CardTitle>
+          <CardTitle>Train Your Model</CardTitle>
           <CardDescription>
-            Upload your Frs documents + Data sets and click on Train Button.
+            Upload your FRS documents and datasets, then click the
+            &quot;Train&quot; button to begin the process.
           </CardDescription>
         </CardHeader>
         <CardContent>
