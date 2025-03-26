@@ -80,7 +80,11 @@ const generateColumns = (data: RowData[]): ColumnDef<unknown>[] => {
       return (
         <Tooltip delayDuration={200}>
           <TooltipTrigger asChild>
-            <div className={`max-w-[300px] truncate cursor-pointer`}>
+            <div
+              className={`max-w-[300px] truncate cursor-pointer ${
+                value === "Non-Compliant" ? "text-red-500" : ""
+              }`}
+            >
               {value.length > maxLength
                 ? `${value.slice(0, maxLength)}...`
                 : value}
