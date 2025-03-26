@@ -139,7 +139,7 @@ export default function Page() {
             </Button>
           ) : (
             <Button
-              disabled={files?.length ? false : true}
+              disabled={(files?.length ? false : true) || loading}
               onClick={() => {
                 submitFile();
               }}
