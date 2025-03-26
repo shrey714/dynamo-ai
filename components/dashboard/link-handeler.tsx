@@ -33,8 +33,8 @@ export function LinkHandeler() {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          className="h-8 w-8 text-white cursor-pointer"
-          variant="outline"
+          className="h-8 w-8 text-white bg-transparent cursor-pointer"
+          variant="ghost"
           size="icon"
         >
           <Link2 />

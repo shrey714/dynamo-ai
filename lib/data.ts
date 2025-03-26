@@ -14,6 +14,11 @@ export const pages = [
         icon: HomeIcon,
     },
     {
+        title: "Report",
+        url: "/report",
+        icon: Newspaper,
+    },
+    {
         title: "Rules",
         url: "/rules",
         icon: Settings2,
@@ -28,11 +33,6 @@ export const pages = [
                 icon: BrainCog,
             }
         ]
-    },
-    {
-        title: "Report",
-        url: "/report",
-        icon: Newspaper,
     },
 ];
 

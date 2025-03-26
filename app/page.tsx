@@ -19,10 +19,21 @@ import {
 import { Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useFRYTypeStore } from "@/lib/store/useFRYTypeStore";
 import { useFRYDataStore } from "@/lib/store/useFRYData";
-import { FRY14MData } from "@/lib/data";
-
+import { toast } from "sonner";
+import { useApiStore } from "@/lib/store/useApiStore";
+import axios from "axios";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useRouter } from 'next/navigation'
 const dropZoneConfig = {
   maxFiles: 1,
   maxSize: 1024 * 1024 * 4,
@@ -38,94 +49,152 @@ const dropZoneConfig = {
 
 export default function Page() {
   const [files, setFiles] = useState<File[] | null>(null);
-  const { FRYType, setFRYType } = useFRYTypeStore();
   const { setFRYData } = useFRYDataStore();
   const [loading, setloading] = useState(false);
-  return (
-    <div className="flex flex-col gap-8 items-center justify-start px-4 py-[5svh]">
-      <Tabs
-        value={FRYType}
-        className="flex flex-col items-center justify-start w-full"
-      >
-        <TabsList className="p-1.5 h-auto max-w-xl grid w-full gap-2 grid-cols-2 bg-border">
-          <TabsTrigger
-            className="cursor-pointer data-[state=inactive]:hover:bg-secondary data-[state=active]:!bg-red-500 data-[state=active]:!text-white py-2.5 text-base"
-            value="FRY14M"
-            onClick={() => {
-              if (FRYType !== "FRY14M") setFiles(null);
-              setFRYType("FRY14M");
-            }}
-          >
-            FRY14M
-          </TabsTrigger>
-          <TabsTrigger
-            className="cursor-pointer data-[state=inactive]:hover:bg-secondary data-[state=active]:!bg-red-500 data-[state=active]:!text-white py-2.5 text-base"
-            value="FRY14Q"
-            onClick={() => {
-              if (FRYType !== "FRY14Q") setFiles(null);
-              setFRYType("FRY14Q");
-            }}
-          >
-            FRY14Q
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+  const { apiEndpoint } = useApiStore.getState();
+  const [isSuccess, setIsSuccess] = useState(false);
+  const router = useRouter();
 
-      <Card className="w-full max-w-4xl pt-0 rounded-xl bg-muted/50 overflow-hidden">
-        <CardHeader className="py-4 bg-border">
-          <CardTitle>{FRYType}</CardTitle>
-          <CardDescription>
-            Upload your {FRYType} document and click on Get Reports.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="space-y-1">
-            <FileUploader
-              value={files}
-              reSelect={true}
-              onValueChange={setFiles}
-              dropzoneOptions={dropZoneConfig}
-              className="relative rounded-lg p-2"
+  const submitFile = async () => {
+    if (!files || !files[0]) {
+      toast.error("Please select a file first.");
+      return;
+    }
+    if (!apiEndpoint) {
+      toast.error("API Endpoint is not available");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", files[0]);
+    setloading(true);
+    toast.promise(
+      axios.post(`${apiEndpoint}/generate_anomalies_report`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
+      {
+        loading: "Generating new rules...",
+        success: (response) => {
+          if (response.data.status === "success") {
+            setFRYData(JSON.parse(response.data.data));
+            setloading(false);
+            setIsSuccess(true);
+            return "Report generated successfully!";
+          } else {
+            setloading(false);
+            throw new Error("Failed to generate the report.");
+          }
+        },
+        error: (error) => {
+          setloading(false);
+          console.error("Failed to generate the report:", error);
+          return "Failed to generate the report. Please try again.";
+        },
+      }
+    );
+  };
+
+  return (
+    <>
+      <AlertDialog open={isSuccess} onOpenChange={setIsSuccess}>
+        <AlertDialogContent className="w-6xl max-w-max">
+          <AlertDialogHeader>
+            <AlertDialogTitle>FRY14Q reports are generated !</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please redirect to reports page to view the generated FRY14Q
+              reports else you can reset the form.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setFiles(null);
+                setFRYData([]);
+                setIsSuccess(false);
+              }}
             >
-              <FileInput className="outline-dashed outline-2 outline-border">
-                <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full ">
-                  <FileSvgDraw />
-                </div>
-              </FileInput>
-              <FileUploaderContent className="bg-accent rounded-sm">
-                {files &&
-                  files.length > 0 &&
-                  files.map((file, i) => (
-                    <FileUploaderItem key={i} index={i} className="py-2 h-auto">
-                      <Paperclip className="h-4 w-4 stroke-current" />
-                      <span>{file.name}</span>
-                    </FileUploaderItem>
-                  ))}
-              </FileUploaderContent>
-            </FileUploader>
-          </div>
-        </CardContent>
-        <CardFooter className="items-center justify-center">
-          <Button
-            disabled={files?.length ? false : true}
-            onClick={() => {
-              setloading(true);
-              setTimeout(() => {
-                if (FRYType === "FRY14M") {
-                  setFRYData(FRY14MData);
-                } else if (FRYType === "FRY14Q") {
-                  setFRYData({});
-                }
-                setloading(false);
-              }, 3000);
-            }}
-            className="transition-all duration-300 hover:ring-1 hover:ring-primary/90 hover:ring-offset-1 bg-red-500 hover:bg-red-800 cursor-pointer text-lg  h-auto text-white"
-          >
-            {loading ? "Loading..." : `Get ${FRYType} Reports`}
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+              Reset
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                router.push("/report");
+              }}
+              className="bg-red-500 text-white cursor-pointer hover:bg-orange-700"
+            >
+              Get Reports
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div className="flex flex-col gap-8 items-center justify-start px-4 py-[5svh]">
+        <Tabs
+          value={"FRY14Q"}
+          className="flex flex-col items-center justify-start w-full"
+        >
+          <TabsList className="p-1.5 h-auto max-w-md grid w-full gap-2 grid-cols-1 bg-border">
+            <TabsTrigger
+              className="cursor-pointer data-[state=inactive]:hover:bg-secondary data-[state=active]:!bg-red-500 data-[state=active]:!text-white py-2.5 text-base"
+              value="FRY14Q"
+              onClick={() => {}}
+            >
+              FRY14Q
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <Card className="w-full max-w-4xl pt-0 rounded-xl bg-muted/50 overflow-hidden">
+          <CardHeader className="py-4 bg-border">
+            <CardTitle>FRY14Q</CardTitle>
+            <CardDescription>
+              Upload your FRY14Q document and click on Get Reports.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="space-y-1">
+              <FileUploader
+                value={files}
+                reSelect={true}
+                onValueChange={setFiles}
+                dropzoneOptions={dropZoneConfig}
+                className="relative rounded-lg p-2"
+              >
+                <FileInput className="outline-dashed outline-2 outline-border">
+                  <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full ">
+                    <FileSvgDraw />
+                  </div>
+                </FileInput>
+                <FileUploaderContent className="bg-accent rounded-sm">
+                  {files &&
+                    files.length > 0 &&
+                    files.map((file, i) => (
+                      <FileUploaderItem
+                        key={i}
+                        index={i}
+                        className="py-2 h-auto"
+                      >
+                        <Paperclip className="h-4 w-4 stroke-current" />
+                        <span>{file.name}</span>
+                      </FileUploaderItem>
+                    ))}
+                </FileUploaderContent>
+              </FileUploader>
+            </div>
+          </CardContent>
+          <CardFooter className="items-center justify-center">
+            <Button
+              disabled={(files?.length ? false : true) || loading}
+              onClick={() => {
+                submitFile();
+              }}
+              className="transition-all duration-300 hover:ring-1 hover:ring-primary/90 hover:ring-offset-1 bg-red-500 hover:bg-red-800 cursor-pointer text-lg  h-auto text-white"
+            >
+              {loading ? "Loading..." : `Get FRY14Q Reports`}
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </>
   );
 }
 
