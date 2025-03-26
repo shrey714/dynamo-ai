@@ -45,6 +45,7 @@ export default function Page() {
           </DialogContent>
         </Dialog>
       )}
+
       <DataTable
         columns={generateColumns(FRYdata)}
         data={Object.values(FRYdata)}

@@ -48,6 +48,10 @@ export function DataTable<TData>({
   return (
     <div className="flex flex-col gap-2 p-2 overflow-y-hidden h-auto sm:h-[calc(100svh-61px)]">
       <div className="flex items-center justify-end">
+        <p className="w-full text-xl font-medium pl-3">
+          Data validation Report
+        </p>
+
         <Button
           variant="outline"
           size="sm"
