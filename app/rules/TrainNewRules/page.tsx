@@ -70,6 +70,7 @@ export default function Page() {
           } else {
             setloading(false);
             setStaus("failed");
+            setFiles([]);
             throw new Error("Failed to generate new rules.");
           }
         },
@@ -77,6 +78,7 @@ export default function Page() {
           setloading(false);
           console.error("Failed to generate new rules:", error);
           setStaus("failed");
+          setFiles([]);
           return "Failed to generate new rules. Please try again.";
         },
       }

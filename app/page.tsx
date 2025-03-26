@@ -110,7 +110,7 @@ export default function Page() {
           <AlertDialogFooter>
             <AlertDialogCancel
               onClick={() => {
-                setFiles(null);
+                setFiles([]);
                 setFRYData([]);
                 setIsSuccess(false);
               }}
