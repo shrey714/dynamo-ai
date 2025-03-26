@@ -57,13 +57,9 @@ export default function Page() {
     formData.append("file", files[0]);
     setloading(true);
     toast.promise(
-      axios.post(
-        "https://7cc2-34-126-158-37.ngrok-free.app/generate_new_rules",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      ),
+      axios.post(`${apiEndpoint}/generate_new_rules`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
       {
         loading: "Generating new rules...",
         success: (response) => {
