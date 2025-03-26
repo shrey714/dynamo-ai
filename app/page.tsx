@@ -33,7 +33,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 const dropZoneConfig = {
   maxFiles: 1,
   maxSize: 1024 * 1024 * 4,
@@ -99,10 +99,12 @@ export default function Page() {
       <AlertDialog open={isSuccess} onOpenChange={setIsSuccess}>
         <AlertDialogContent className="w-6xl max-w-max">
           <AlertDialogHeader>
-            <AlertDialogTitle>FRY14Q reports are generated !</AlertDialogTitle>
+            <AlertDialogTitle>
+              FRY14Q Reports Successfully Generated !
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Please redirect to reports page to view the generated FRY14Q
-              reports else you can reset the form.
+              Your FRY14Q reports have been generated. Navigate to the reports
+              page to review them, or reset the form to start over.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
