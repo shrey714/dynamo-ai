@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnePlus Animation Icon</title>
+    <style>
+        /* 
+           Variables converted from your SCSS 
+           I used 4px as the base multiplier for a clean desktop size
+        */
+        :root {
+            --sun-size: 40px;
+            --planet-size: 20px;
+            --orbit-distance: 80px;
+            --speed: 2.2s;
+            --oneplus-red: #f00;
+        }
+
+        body {
+            background-color: #000;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #oneplus {
+            position: relative;
+            width: var(--sun-size);
+            height: var(--sun-size);
+            background-color: var(--oneplus-red);
+            border-radius: 50%;
+        }
+
+        #oneplus::after, 
+        #oneplus::before {
+            content: '';
+            position: absolute;
+            width: var(--planet-size);
+            height: var(--planet-size);
+            border-radius: 50%;
+            background-color: #fff;
+            
+            /* Center the satellites horizontally relative to red dot */
+            left: 50%;
+            margin-left: calc(var(--planet-size) / -2);
+            
+            /* Position them at the orbit distance */
+            top: calc((var(--orbit-distance) - var(--planet-size)) * -1);
+            
+            /* The secret sauce: The rotation point is the center of the red dot */
+            /* Logic: Orbit Distance - Planet Size + Half of Sun Size */
+            transform-origin: 50% calc(var(--orbit-distance) - var(--planet-size) + (var(--sun-size) / 2));
+            
+            animation: spin var(--speed) cubic-bezier(0.86, 0, 0.07, 1) infinite;
+        }
+
+        /* Offset the second dot by half the speed to put it on the opposite side */
+        #oneplus::before {
+            animation-delay: calc(var(--speed) / -2);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Optional: CSS to pin it to the top right corner for your app */
+        .corner-mode {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            transform: scale(0.5); /* Scale down for UI usage */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- This is your icon -->
+    <div id="oneplus"></div>
+
+</body>
+</html>
